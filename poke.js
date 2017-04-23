@@ -7,22 +7,28 @@ if (system.args.length < 3) {
 }
 
 var page = require('webpage').create()
+
 // page.onResourceReceived = function (res) { log('<-', res.url) }
 // page.onResourceRequested = function (req) { log('->', req.url) }
+
+page.onConsoleMessage = console.log
+page.viewportSize = { width: 1920, height: 1080 }
 page.settings.userAgent = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0'
 
 function log () {
-  var args = [new Date().toISOString()].concat([].slice.call(arguments))
-  console.log.apply(console, args)
+  var args = [].slice.call(arguments)
+  console.log.apply(console, [new Date().toISOString()].concat(args))
+}
+
+function $ (element, tagName) {
+  var list = element.getElementsByTagName(tagName)
+  return Array.prototype.slice.call(list)
 }
 
 function run () {
-  var pokedUsers = page.evaluate(function () {
-    function $ (element, tagName) {
-      var list = element.getElementsByTagName(tagName)
-      return Array.prototype.slice.call(list)
-    }
+  page.render('facebook.png')
 
+  var pokedUsers = page.evaluate(function ($) {
     function isUsername (a) {
       var attr = a.getAttribute('data-hovercard')
       return attr && attr.includes('/ajax/hovercard/user.php?')
@@ -60,7 +66,7 @@ function run () {
     }
 
     return $(document, 'a').filter(isPokeBackButton).map(poke)
-  })
+  }, $)
 
   if (!pokedUsers.length) return
   log('poked:', pokedUsers.join(', '))
@@ -82,13 +88,18 @@ page.open('https://www.facebook.com/pokes', function (status) {
     return email
   }, email, password))
 
-  function isLoggedIn () {
+  function isLoggedIn ($) {
+    function isContinueButton (a) {
+      return a.innerHTML.toLowerCase().includes('continue')
+    }
+
+    console.log($(document, 'a').filter(isContinueButton).map(function (a) { return a.innerHTML }).join(', '))
     return document.title.toLowerCase().indexOf('log into facebook') < 0
   }
 
   function check () {
     if (--timeout <= 0) return phantom.exit(2)
-    if (!page.evaluate(isLoggedIn)) return
+    if (!page.evaluate(isLoggedIn, $)) return
 
     clearInterval(loginChecker)
     setInterval(run, 50)
