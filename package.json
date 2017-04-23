@@ -1,0 +1,31 @@
+{
+  "name": "facebook-autopoker",
+  "version": "1.0.0",
+  "description": "Automatically pokes everyone back",
+  "main": "index.js",
+  "scripts": {
+    "test": "standard",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ChalkPE/facebook-autopoker.git"
+  },
+  "keywords": [
+    "facebook",
+    "poke"
+  ],
+  "author": "ChalkPE",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ChalkPE/facebook-autopoker/issues"
+  },
+  "homepage": "https://github.com/ChalkPE/facebook-autopoker#readme",
+  "dependencies": {
+    "phantomjs-prebuilt": "^2.1.14",
+    "prompt": "^1.0.0"
+  },
+  "devDependencies": {
+    "standard": "^10.0.2"
+  }
+}
