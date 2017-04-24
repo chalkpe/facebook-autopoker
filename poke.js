@@ -110,7 +110,10 @@ function main (status) {
       if (span.innerHTML.toLowerCase().includes(message)) span.click()
     }
 
-    var continueButton = document.getElementById('checkpointSubmitButton')
+    var continueButton = $(document, 'button').filter(function (button) {
+      return button.innerHTML.toLowerCase().includes('continue')
+    }).pop()
+
     if (continueButton) {
       $(document, 'span').map(clickApproveOption)
       continueButton.click()
