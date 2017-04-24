@@ -119,7 +119,8 @@ function main (status) {
       continueButton.click()
     }
 
-    return window && window.location && window.location.href &&
+    return !continueButton &&
+      window && window.location && window.location.href &&
       window.location.href.indexOf('facebook.com/checkpoint/') < 0 &&
       document && document.title && document.title.indexOf('Log into') < 0
   }
