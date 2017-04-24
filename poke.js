@@ -1,7 +1,7 @@
 /* eslint-env phantomjs */
 
-var url = 'https://www.facebook.com/login.php'
-var pokes = 'https://www.facebook.com/pokes/?notif_t=poke'
+var loginUrl = 'https://www.facebook.com/login.php'
+var pokesUrl = 'https://www.facebook.com/pokes/?notif_t=poke'
 
 var system = require('system')
 if (system.args.length < 3) {
@@ -126,8 +126,8 @@ function main (status) {
     clearInterval(loginChecker)
     log('logged in sucessfully')
 
-    if (url !== pokes) {
-      page.open((url = pokes), main)
+    if (page.url !== pokesUrl) {
+      page.open(pokesUrl, main)
       log('running:', setInterval(run, 50))
     }
   }
@@ -135,4 +135,4 @@ function main (status) {
   var loginChecker = setInterval(check, 1000)
 }
 
-page.open(url, main)
+page.open(loginUrl, main)
