@@ -13,8 +13,8 @@ if (system.args.length < 3) {
 var page = require('webpage').create()
 
 // page.onResourceReceived = function (res) { log('<-', res.url) }
-// page.onResourceRequested = function (req) { log('->', req.url) }
-// page.onConsoleMessage = function (message) { console.log(message) }
+page.onResourceRequested = function (req) { log('->', req.url) }
+page.onConsoleMessage = function (message) { console.log(message) }
 
 page.viewportSize = { width: 1920, height: 1080 }
 page.settings.userAgent = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0'
@@ -104,7 +104,7 @@ function login () {
 
 function isLoggedIn ($) {
   function clickApproveOption (span) {
-    var message = 'approve your login on another smartphone or computer'
+    var message = 'approve your login on another'
     if (span.innerHTML.toLowerCase().includes(message)) span.click()
   }
 
@@ -129,15 +129,23 @@ function main (status) {
   save()
   login()
 
+  var timeout = 30
+
   var loginChecker = setInterval(function () {
     save()
-    if (!page.evaluate(isLoggedIn, $)) return
 
-    clearInterval(loginChecker)
-    log('logged in sucessfully')
+    if (--timeout < 0) {
+      clearInterval(loginChecker)
+      return page.open(url, main)
+    }
 
-    page.open(url, main)
-  }, 5000)
+    if (page.evaluate(isLoggedIn, $)) {
+      clearInterval(loginChecker)
+
+      log('logged in sucessfully')
+      log('running', setInterval(run, 50))
+    }
+  }, 1000)
 }
 
 page.open(url, main)
