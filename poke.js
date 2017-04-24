@@ -119,17 +119,13 @@ function main (status) {
       if (span.innerHTML.toLowerCase().includes(message)) span.click()
     }
 
-    var list = $(document, 'button').concat($(document, 'a'))
-    var continueButton = list.filter(function (button) {
-      return button.innerHTML.toLowerCase().includes('continue')
-    }).pop()
-
+    var continueButton = document.getElementById('checkpointSubmitButton')
     if (continueButton) {
       $(document, 'span').map(clickApproveOption)
       continueButton.click()
     }
 
-    return !continueButton &&
+    return continueButton === null &&
       window && window.location && window.location.href &&
       window.location.href.indexOf('facebook.com/checkpoint/') < 0 &&
       document && document.title && document.title.indexOf('Log into') < 0
