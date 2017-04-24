@@ -1,9 +1,6 @@
 /* eslint-env phantomjs */
 
-var loginUrl = 'https://www.facebook.com/login.php'
-var pokesUrl = 'https://www.facebook.com/pokes'
-
-var flag = false
+var url = 'https://www.facebook.com/pokes'
 
 var fs = require('fs')
 var system = require('system')
@@ -28,8 +25,6 @@ function log () {
 }
 
 function save () {
-  log('save', page.url)
-
   page.render('facebook.png')
   fs.write('facebook.html', page.content, 'w')
 }
@@ -107,47 +102,42 @@ function login () {
   save()
 }
 
-function main (status) {
-  log('status:', status)
-  save()
-
-  login()
-
-  function isLoggedIn ($) {
-    function clickApproveOption (span) {
-      var message = 'approve your login on another smartphone or computer'
-      if (span.innerHTML.toLowerCase().includes(message)) span.click()
-    }
-
-    var continueButton = document.getElementById('checkpointSubmitButton')
-    if (continueButton) {
-      $(document, 'span').map(clickApproveOption)
-      continueButton.click()
-    }
-
-    return continueButton === null &&
-      window && window.location && window.location.href &&
-      window.location.href.indexOf('facebook.com/checkpoint/') < 0 &&
-      document && document.title && document.title.indexOf('Log into') < 0
+function isLoggedIn ($) {
+  function clickApproveOption (span) {
+    var message = 'approve your login on another smartphone or computer'
+    if (span.innerHTML.toLowerCase().includes(message)) span.click()
   }
 
-  function check () {
-    save()
+  var continueButton = document.getElementById('checkpointSubmitButton')
+  if (continueButton) {
+    $(document, 'span').map(clickApproveOption)
+    continueButton.click()
+  }
 
+  var list = [].slice.call(document.querySelectorAll('.uiHeaderTitle a[href]'))
+
+  return continueButton === null &&
+    window && window.location && window.location.href &&
+    window.location.href.indexOf('facebook.com/checkpoint/') < 0 &&
+    document && document.title && document.title.indexOf('Log into') < 0 &&
+    list.some(function (a) { return a.innerHTML.includes('Pokes') })
+}
+
+function main (status) {
+  log('status:', status)
+
+  save()
+  login()
+
+  var loginChecker = setInterval(function () {
+    save()
     if (!page.evaluate(isLoggedIn, $)) return
 
     clearInterval(loginChecker)
     log('logged in sucessfully')
 
-    if (!flag) {
-      page.open(pokesUrl, main)
-      return (flag = true)
-    }
-
-    log('running:', page.evaluate(isLoggedIn, $), setInterval(run, 50))
-  }
-
-  var loginChecker = setInterval(check, 1000)
+    page.open(url, main)
+  }, 5000)
 }
 
-page.open(loginUrl, main)
+page.open(url, main)
