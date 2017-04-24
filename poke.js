@@ -49,7 +49,8 @@ function run () {
     }
 
     function getTimes (div) {
-      return parseInt(pattern.exec(div.innerHTML)[1], 10)
+      return div && div.innerHTML &&
+        parseInt(pattern.exec(div.innerHTML)[1], 10)
     }
 
     function isPokeBackButton (a) {
@@ -65,7 +66,8 @@ function run () {
       var user = getUsername($(block, 'a').filter(isUsername).pop())
       var times = getTimes($(block, 'div').filter(isTimes).pop())
 
-      return user.name + ' x' + times + ' (' + user.id + ')'
+      times = times ? 'x' + times : ''
+      return user.name + ' ' + times + ' (' + user.id + ')'
     }
 
     return $(document, 'a').filter(isPokeBackButton).map(poke)
@@ -75,20 +77,28 @@ function run () {
   log('poked:', pokedUsers.join(', '))
 }
 
-function main (status) {
-  log('status:', status)
-  if (status !== 'success') return phantom.exit(1)
-
+function login () {
   var email = system.args[1]
   var password = system.args[2]
 
   log('login:', page.evaluate(function (email, password) {
-    document.getElementById('email').value = email
-    document.getElementById('pass').value = password
-    document.getElementById('loginbutton').click()
+    var emailInput = document.getElementById('email')
+    var passwordInput = document.getElementById('pass')
+    var loginButton = document.getElementById('loginbutton')
+
+    if (emailInput) emailInput.value = email
+    if (passwordInput) passwordInput.value = password
+    if (loginButton) loginButton.click()
 
     return email
   }, email, password))
+}
+
+function main (status) {
+  log('status:', status)
+  page.render('facebook.png')
+
+  login()
 
   function isLoggedIn ($) {
     function clickApproveOption (span) {
@@ -114,8 +124,8 @@ function main (status) {
     log('logged in sucessfully')
 
     if (url !== pokes) {
+      page.open((url = pokes), main)
       log('running:', setInterval(run, 50))
-      page.open(url = pokes, main)
     }
   }
 
