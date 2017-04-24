@@ -1,5 +1,8 @@
 /* eslint-env phantomjs */
 
+var url = 'https://www.facebook.com/login.php'
+var pokes = 'https://www.facebook.com/pokes/?notif_t=poke'
+
 var system = require('system')
 if (system.args.length < 3) {
   console.log('usage: poke.js <email> <password>')
@@ -72,7 +75,7 @@ function run () {
   log('poked:', pokedUsers.join(', '))
 }
 
-page.open('https://www.facebook.com/login.php', function (status) {
+function main (status) {
   log('status:', status)
   if (status !== 'success') return phantom.exit(1)
 
@@ -110,9 +113,13 @@ page.open('https://www.facebook.com/login.php', function (status) {
     clearInterval(loginChecker)
     log('logged in sucessfully')
 
-    var pokes = 'https://www.facebook.com/pokes/?notif_t=poke'
-    page.open(pokes, function () { log('running:', setInterval(run, 50)) })
+    if (url !== pokes) {
+      log('running:', setInterval(run, 50))
+      page.open(url = pokes, main)
+    }
   }
 
   var loginChecker = setInterval(check, 1000)
-})
+}
+
+page.open(url, main)
