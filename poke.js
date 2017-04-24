@@ -135,7 +135,7 @@ function main (status) {
       return (flag = true)
     }
 
-    log('running:', setInterval(run, 50))
+    log('running:', page.evaluate(isLoggedIn, $), setInterval(run, 50))
   }
 
   var loginChecker = setInterval(check, 1000)
