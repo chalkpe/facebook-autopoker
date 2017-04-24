@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "standard",
-    "start": "node index.js"
+    "start": "node build.js && node index.js"
   },
   "repository": {
     "type": "git",
@@ -22,10 +22,15 @@
   },
   "homepage": "https://github.com/ChalkPE/facebook-autopoker#readme",
   "dependencies": {
+    "babel-polyfill": "^6.23.0",
     "phantomjs-prebuilt": "^2.1.14",
     "prompt": "^1.0.0"
   },
   "devDependencies": {
+    "babel-preset-env": "^1.4.0",
+    "babel-preset-stage-0": "^6.24.1",
+    "babelify": "^7.3.0",
+    "browserify": "^14.3.0",
     "standard": "^10.0.2"
   }
 }

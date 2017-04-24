@@ -57,6 +57,9 @@ typings/
 # dotenv environment variables file
 .env
 
+# Build output file
+dist/
+
 # Snapshot file
 facebook.png
 facebook.html

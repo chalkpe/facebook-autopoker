@@ -13,7 +13,7 @@ prompt.start()
 prompt.get(schema, function (err, result) {
   if (err) return console.error(err)
 
-  let args = ['poke.js', result.email, result.password]
+  let args = ['dist/bundle.js', result.email, result.password]
   if (result.proxy.length) args.unshift('--proxy=' + result.proxy)
 
   const program = phantomjs.exec(...args)
