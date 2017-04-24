@@ -121,6 +121,8 @@ function main (status) {
 
   function check () {
     page.render('facebook.png')
+    console.log(page.url)
+
     if (!page.evaluate(isLoggedIn, $)) return
 
     clearInterval(loginChecker)
