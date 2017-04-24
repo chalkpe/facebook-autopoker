@@ -110,7 +110,8 @@ function main (status) {
       if (span.innerHTML.toLowerCase().includes(message)) span.click()
     }
 
-    var continueButton = $(document, 'button').filter(function (button) {
+    var list = $(document, 'button').concat($(document, 'a'))
+    var continueButton = list.filter(function (button) {
       return button.innerHTML.toLowerCase().includes('continue')
     }).pop()
 
