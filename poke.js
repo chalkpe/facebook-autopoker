@@ -92,6 +92,8 @@ function login () {
 
     return email
   }, email, password))
+
+  page.render('facebook.png')
 }
 
 function main (status) {
@@ -118,6 +120,7 @@ function main (status) {
   }
 
   function check () {
+    page.render('facebook.png')
     if (!page.evaluate(isLoggedIn, $)) return
 
     clearInterval(loginChecker)
