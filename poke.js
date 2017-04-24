@@ -26,6 +26,8 @@ function $ (element, tagName) {
 }
 
 function run () {
+  page.render('facebook.png')
+
   var pokedUsers = page.evaluate(function ($) {
     function isUsername (a) {
       var attr = a.getAttribute('data-hovercard')
