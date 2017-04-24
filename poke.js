@@ -3,6 +3,8 @@
 var loginUrl = 'https://www.facebook.com/login.php'
 var pokesUrl = 'https://www.facebook.com/pokes'
 
+var flag = false
+
 var system = require('system')
 if (system.args.length < 3) {
   console.log('usage: poke.js <email> <password>')
@@ -128,8 +130,9 @@ function main (status) {
     clearInterval(loginChecker)
     log('logged in sucessfully')
 
-    if (page.url !== pokesUrl) {
-      return page.open(pokesUrl, main)
+    if (!flag) {
+      page.open(pokesUrl, main)
+      return (flag = true)
     }
 
     log('running:', setInterval(run, 50))
