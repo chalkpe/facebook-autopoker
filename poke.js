@@ -5,7 +5,9 @@ var pokesUrl = 'https://www.facebook.com/pokes'
 
 var flag = false
 
+var fs = require('fs')
 var system = require('system')
+
 if (system.args.length < 3) {
   console.log('usage: poke.js <email> <password>')
   phantom.exit()
@@ -25,13 +27,20 @@ function log () {
   console.log.apply(console, [new Date().toISOString()].concat(args))
 }
 
+function save () {
+  log('save', page.url)
+
+  page.render('facebook.png')
+  fs.write('facebook.html', page.content, 'w')
+}
+
 function $ (element, tagName) {
   var list = element.getElementsByTagName(tagName)
   return Array.prototype.slice.call(list)
 }
 
 function run () {
-  page.render('facebook.png')
+  save()
 
   var pokedUsers = page.evaluate(function ($) {
     function isUsername (a) {
@@ -95,12 +104,12 @@ function login () {
     return email
   }, email, password))
 
-  page.render('facebook.png')
+  save()
 }
 
 function main (status) {
   log('status:', status)
-  page.render('facebook.png')
+  save()
 
   login()
 
@@ -127,8 +136,7 @@ function main (status) {
   }
 
   function check () {
-    page.render('facebook.png')
-    console.log(page.url)
+    save()
 
     if (!page.evaluate(isLoggedIn, $)) return
 
