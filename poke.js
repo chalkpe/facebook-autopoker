@@ -10,8 +10,8 @@ var page = require('webpage').create()
 
 // page.onResourceReceived = function (res) { log('<-', res.url) }
 // page.onResourceRequested = function (req) { log('->', req.url) }
+// page.onConsoleMessage = function (message) { console.log(message) }
 
-page.onConsoleMessage = console.log
 page.viewportSize = { width: 1920, height: 1080 }
 page.settings.userAgent = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0'
 
@@ -26,8 +26,6 @@ function $ (element, tagName) {
 }
 
 function run () {
-  page.render('facebook.png')
-
   var pokedUsers = page.evaluate(function ($) {
     function isUsername (a) {
       var attr = a.getAttribute('data-hovercard')
@@ -72,13 +70,12 @@ function run () {
   log('poked:', pokedUsers.join(', '))
 }
 
-page.open('https://www.facebook.com/pokes', function (status) {
+page.open('https://www.facebook.com/login.php', function (status) {
   log('status:', status)
   if (status !== 'success') return phantom.exit(1)
 
   var email = system.args[1]
   var password = system.args[2]
-  var timeout = 100 // 10 seconds
 
   log('login:', page.evaluate(function (email, password) {
     document.getElementById('email').value = email
@@ -89,23 +86,31 @@ page.open('https://www.facebook.com/pokes', function (status) {
   }, email, password))
 
   function isLoggedIn ($) {
-    function isContinueButton (a) {
-      return a.innerHTML.toLowerCase().includes('continue')
+    function clickApproveOption (span) {
+      var message = 'approve your login on another smartphone or computer'
+      if (span.innerHTML.toLowerCase().includes(message)) span.click()
     }
 
-    console.log($(document, 'a').filter(isContinueButton).map(function (a) { return a.innerHTML }).join(', '))
-    return document.title.toLowerCase().indexOf('log into facebook') < 0
+    var continueButton = document.getElementById('checkpointSubmitButton')
+    if (continueButton) {
+      $(document, 'span').map(clickApproveOption)
+      continueButton.click()
+    }
+
+    return window && window.location && window.location.href &&
+      window.location.href.indexOf('facebook.com/checkpoint/') < 0 &&
+      document && document.title && document.title.indexOf('Log into') < 0
   }
 
   function check () {
-    if (--timeout <= 0) return phantom.exit(2)
     if (!page.evaluate(isLoggedIn, $)) return
 
     clearInterval(loginChecker)
-    setInterval(run, 50)
+    log('logged in sucessfully')
 
-    log('run: logged in sucessfully')
+    var pokes = 'https://www.facebook.com/pokes/?notif_t=poke'
+    page.open(pokes, function () { log('running:', setInterval(run, 50)) })
   }
 
-  var loginChecker = setInterval(check, 100)
+  var loginChecker = setInterval(check, 1000)
 })
