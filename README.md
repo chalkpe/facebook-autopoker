@@ -4,7 +4,7 @@
 ## Usage
 ```bash
 $ git clone https://github.com/ChalkPE/facebook-autopoker.git
-$ cd facebook-autopoker && npm install --production && npm start
+$ cd facebook-autopoker && npm install && npm start
 
 > node install.js # Install PhantomJS automatically
 > facebook-autopoker@1.0.0 start /home/chalk/facebook-autopoker
