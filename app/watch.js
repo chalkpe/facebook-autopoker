@@ -7,7 +7,13 @@ export default function watch ($) {
     return text && text.slice(text.lastIndexOf('=') + 1)
   }
 
-  return $(`a._42ft._4jy0._4jy3._4jy1.selected._51sy:not([${mark}])`).map(a => {
+  const selectors = [
+    'div#contentArea',
+    'div._4-u2._xct._4-u8:first-child',
+    'a._42ft._4jy0._4jy3._4jy1.selected._51sy'
+  ]
+
+  return $(`${selectors.join(' ')}:not([${mark}])`).map(a => {
     a.click()
     a.setAttribute(mark, 'yes')
 
