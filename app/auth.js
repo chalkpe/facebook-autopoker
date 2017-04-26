@@ -1,16 +1,16 @@
 export default function authenticate ($, system) {
-  let emailInput = document.getElementById('email')
+  let emailInput = $('#email')[0]
   if (emailInput) emailInput.value = system.args[1]
 
-  let passwordInput = document.getElementById('pass')
+  let passwordInput = $('#pass')[0]
   if (passwordInput) passwordInput.value = system.args[2]
 
-  let loginButton = document.getElementById('loginbutton')
+  let loginButton = $('#loginbutton')[0]
   if (loginButton) loginButton.click()
 
-  let continueButton = document.getElementById('checkpointSubmitButton')
+  let continueButton = $('checkpointSubmitButton')[0]
   if (continueButton) {
-    $(document, 'span').forEach(span => {
+    $('span').forEach(span => {
       let text = span.innerHTML.toLowerCase()
       if (text.includes('approve')) span.click()
     })

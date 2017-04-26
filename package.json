@@ -22,7 +22,6 @@
   },
   "homepage": "https://github.com/ChalkPE/facebook-autopoker#readme",
   "dependencies": {
-    "babel-polyfill": "^6.23.0",
     "phantomjs-prebuilt": "^2.1.14",
     "prompt": "^1.0.0"
   },

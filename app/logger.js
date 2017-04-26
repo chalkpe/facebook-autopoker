@@ -1,3 +1,1 @@
-export default function log (...args) {
-  return console.log(new Date().toISOString(), ...args)
-}
+export default (...args) => console.log(new Date().toISOString(), ...args)

@@ -1,4 +1,2 @@
-export default (element, tagName) => {
-  const nodes = element.getElementsByTagName(tagName)
-  return Array.prototype.slice.call(nodes)
-}
+export default (query, element) =>
+  [].slice.call((element || document).querySelectorAll(query))

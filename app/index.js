@@ -1,5 +1,4 @@
 /* eslint-env phantomjs */
-import 'babel-polyfill'
 
 import fs from 'fs'
 import system from 'system'
@@ -16,6 +15,7 @@ if (system.args.length < 3) {
 }
 
 const page = webpage.create()
+const url = 'https://www.facebook.com/pokes'
 
 page.facebookTimeout = 30
 page.viewportSize = { width: 1920, height: 1080 }
@@ -47,7 +47,7 @@ function run () {
   setTimeout(run, 10)
 }
 
-page.open('https://www.facebook.com/pokes', status => {
+page.open(url, status => {
   log('status:', status)
 
   login()
